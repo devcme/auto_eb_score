@@ -55,6 +55,7 @@ function onScoreAll() {
         lessonId: null,
         lessonName: null,
         lessonStatus: null,
+        doneIds: [],
         settings: cfg
     });
     log(t('msgStartingBatch'));
@@ -76,22 +77,18 @@ function onFilterChange() {
     const inc = document.getElementById('eb-filter-incomplete');
     const low = document.getElementById('eb-filter-low-score');
     const cur = document.getElementById('eb-filter-current');
+    const teacher = document.getElementById('eb-filter-teachers-pick');
+    const student = document.getElementById('eb-filter-students-pick');
     const scoreInput = document.getElementById('eb-filter-score');
+    const listFilters = [inc, low, teacher, student];
 
     if (cur.checked) {
-        inc.disabled = true;
-        low.disabled = true;
+        listFilters.forEach(el => { el.disabled = true; });
         scoreInput.disabled = true;
-    } else if (inc.checked || low.checked) {
-        cur.disabled = true;
-        inc.disabled = false;
-        low.disabled = false;
-        scoreInput.disabled = false;
     } else {
-        inc.disabled = false;
-        low.disabled = false;
-        cur.disabled = false;
+        listFilters.forEach(el => { el.disabled = false; });
         scoreInput.disabled = false;
+        cur.disabled = listFilters.some(el => el.checked);
     }
     persistConfig();
 }
@@ -122,7 +119,7 @@ async function doPhaseEnter(state) {
     log(t('msgFirstVisitDone'));
     await waitMs(3000);
 
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     state.phase = 'score';
     state.settings = readUIConfig();
@@ -142,7 +139,7 @@ async function doPhaseScore(state) {
         return;
     }
 
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     const cfg = readUIConfig();
     const delaySec = resolveDelaySec(cfg);
@@ -151,7 +148,7 @@ async function doPhaseScore(state) {
         await showCountdown(delaySec);
     }
 
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     const score = resolveScore(cfg);
     log(t('msgCommittingScore', score));
@@ -165,9 +162,13 @@ async function doPhaseScore(state) {
 }
 
 async function finishAndNext(state) {
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     if (state.mode === 'all') {
+        if (!Array.isArray(state.doneIds)) state.doneIds = [];
+        if (state.lessonId && !state.doneIds.includes(state.lessonId)) {
+            state.doneIds.push(state.lessonId);
+        }
         state.phase = 'enter';
         state.lessonId = null;
         state.lessonName = null;
@@ -190,7 +191,7 @@ async function resume(state) {
     if (state.phase === 'enter') {
         if (!state.lessonId) {
             const cfg = readUIConfig();
-            const task = pickRandomTask(cfg);
+            const task = pickRandomTask(cfg, state.doneIds || []);
             if (!task) {
                 log(t('msgNoMatchingTasks'));
                 clearState();

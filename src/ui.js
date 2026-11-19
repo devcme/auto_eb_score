@@ -127,6 +127,14 @@ export function createPanel(onScoreAll, onStop, onThemeChange, onFilterChange, o
                             <span style="font-size:14px;color:var(--md-sys-color-on-surface)" data-i18n="scoreUnit">pts</span>
                         </label>
                         <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+                            <md-checkbox id="eb-filter-teachers-pick"></md-checkbox>
+                            <span style="font-size:14px;color:var(--md-sys-color-on-surface)" data-i18n="teachersPick">Teacher’s Pick</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+                            <md-checkbox id="eb-filter-students-pick"></md-checkbox>
+                            <span style="font-size:14px;color:var(--md-sys-color-on-surface)" data-i18n="studentsPick">Student’s Pick</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
                             <md-checkbox id="eb-filter-current"></md-checkbox>
                             <span style="font-size:14px;color:var(--md-sys-color-on-surface)" data-i18n="currentLessonOpt">Current lesson</span>
                         </label>
@@ -224,6 +232,8 @@ export function createPanel(onScoreAll, onStop, onThemeChange, onFilterChange, o
     // Filter
     document.getElementById('eb-filter-incomplete').addEventListener('change', onFilterChange);
     document.getElementById('eb-filter-low-score').addEventListener('change', onFilterChange);
+    document.getElementById('eb-filter-teachers-pick').addEventListener('change', onFilterChange);
+    document.getElementById('eb-filter-students-pick').addEventListener('change', onFilterChange);
     document.getElementById('eb-filter-current').addEventListener('change', onFilterChange);
 
     // Log toggle

@@ -13,6 +13,8 @@ export default {
     delayHelp: '分鐘。兩個都設做 0 就唔使等直接評分。',
     whichLessons: '篩選',
     incompleteNewOnly: '未完成',
+    teachersPick: '老師精選',
+    studentsPick: '學生精選',
     alsoRedoLowScores: '亦都重做低分嘅課節',
     redoWhenScoreBelow: '分數低過',
     scoreUnit: '分',
