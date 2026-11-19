@@ -122,7 +122,7 @@ async function doPhaseEnter(state) {
     log(t('msgFirstVisitDone'));
     await waitMs(3000);
 
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     state.phase = 'score';
     state.settings = readUIConfig();
@@ -142,7 +142,7 @@ async function doPhaseScore(state) {
         return;
     }
 
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     const cfg = readUIConfig();
     const delaySec = resolveDelaySec(cfg);
@@ -151,7 +151,7 @@ async function doPhaseScore(state) {
         await showCountdown(delaySec);
     }
 
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     const score = resolveScore(cfg);
     log(t('msgCommittingScore', score));
@@ -165,7 +165,7 @@ async function doPhaseScore(state) {
 }
 
 async function finishAndNext(state) {
-    if (stopRequested) { clearState(); setRunning(false); return; }
+    if (getStopRequested()) { clearState(); setRunning(false); return; }
 
     if (state.mode === 'all') {
         state.phase = 'enter';
