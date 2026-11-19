@@ -1,6 +1,7 @@
 import { waitMs, randInt } from './utils.js';
 import { t } from './i18n/index.js';
 import { log, getStopRequested } from './ui.js';
+import { selectCandidates, categoryFromCell } from './filter.js';
 
 export async function clickOpenLesson(lessonId) {
     const link = document.querySelector('a.popup[data-id="' + lessonId + '"]');
@@ -140,37 +141,26 @@ export async function handleDifficultySelection(overlayPlayer) {
     }
 }
 
-export function pickRandomTask(settings) {
-    const tasks = [];
+export function pickRandomTask(settings, excludeIds) {
+    const candidates = [];
     document.querySelectorAll('table tbody tr').forEach(row => {
         const cells = row.querySelectorAll('td');
         if (cells.length < 5) return;
         const link = cells[2] && cells[2].querySelector('a.popup[data-id]');
         if (!link) return;
-        const status = cells[3] ? cells[3].textContent.trim().toLowerCase() : '';
         const scoreText = cells[4] ? cells[4].textContent.trim() : '-';
-        const scoreNum = parseInt(scoreText);
 
-        let match = false;
-        if (settings.filterIncomplete) {
-            if (status === 'new' || status === 'incomplete') {
-                match = true;
-            }
-        }
-        if (!match && settings.filterLowScore) {
-            if (!isNaN(scoreNum) && scoreNum < settings.filterScoreBelow) {
-                match = true;
-            }
-        }
-
-        if (match) {
-            tasks.push({
-                id: link.dataset.id,
-                name: cells[2].textContent.trim().replace(/\s+/g, ' ').substring(0, 70),
-                status: cells[3].textContent.trim(),
-                score: scoreText
-            });
-        }
+        candidates.push({
+            id: link.dataset.id,
+            name: cells[2].textContent.trim().replace(/\s+/g, ' ').substring(0, 70),
+            status: cells[3] ? cells[3].textContent.trim() : '',
+            statusLower: cells[3] ? cells[3].textContent.trim().toLowerCase() : '',
+            score: scoreText,
+            scoreNum: parseInt(scoreText),
+            category: categoryFromCell(cells[0])
+        });
     });
-    return tasks.length > 0 ? tasks[randInt(0, tasks.length - 1)] : null;
+
+    const matched = selectCandidates(candidates, settings, excludeIds);
+    return matched.length > 0 ? matched[randInt(0, matched.length - 1)] : null;
 }

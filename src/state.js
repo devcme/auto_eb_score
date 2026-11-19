@@ -36,6 +36,8 @@ export function readUIConfig() {
         delayMax: numVal('eb-delay-max', 0),
         filterIncomplete: document.getElementById('eb-filter-incomplete').checked,
         filterLowScore: document.getElementById('eb-filter-low-score').checked,
+        filterTeachersPick: document.getElementById('eb-filter-teachers-pick').checked,
+        filterStudentsPick: document.getElementById('eb-filter-students-pick').checked,
         filterCurrent: document.getElementById('eb-filter-current').checked,
         filterScoreBelow: numVal('eb-filter-score', 100),
         logVisible: document.getElementById('eb-log-toggle').getAttribute('data-log-visible') === 'true'
@@ -61,6 +63,8 @@ export function applyConfigToUI(c, setLogVisible) {
     if (c.delayMax != null) document.getElementById('eb-delay-max').value = c.delayMax;
     if (c.filterIncomplete != null) document.getElementById('eb-filter-incomplete').checked = c.filterIncomplete;
     if (c.filterLowScore != null) document.getElementById('eb-filter-low-score').checked = c.filterLowScore;
+    if (c.filterTeachersPick != null) document.getElementById('eb-filter-teachers-pick').checked = c.filterTeachersPick;
+    if (c.filterStudentsPick != null) document.getElementById('eb-filter-students-pick').checked = c.filterStudentsPick;
     if (c.filterCurrent != null) document.getElementById('eb-filter-current').checked = c.filterCurrent;
     if (c.filterScoreBelow != null) document.getElementById('eb-filter-score').value = c.filterScoreBelow;
     if (c.logVisible != null) setLogVisible(c.logVisible);

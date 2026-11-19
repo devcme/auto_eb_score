@@ -13,6 +13,8 @@ export default {
     delayHelp: 'Minutes. Set both to 0 to score without waiting.',
     whichLessons: 'Filter',
     incompleteNewOnly: 'Incomplete',
+    teachersPick: 'Teacher’s Pick',
+    studentsPick: 'Student’s Pick',
     alsoRedoLowScores: 'Also redo low scores',
     redoWhenScoreBelow: 'Score below',
     scoreUnit: 'pts',
