@@ -56,6 +56,7 @@ const isWatch = process.argv.includes('--watch');
 const buildOpts = {
   entryPoints: ['src/index.js'],
   bundle: true,
+  define: { EB_VERSION: JSON.stringify(version) },
   outfile: 'dist/eb_auto_score.user.js',
   format: 'iife',
   target: ['es2020'],
