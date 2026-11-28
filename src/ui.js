@@ -79,7 +79,7 @@ export function createPanel(onScoreAll, onStop, onThemeChange, onFilterChange, o
     panel.innerHTML = `
         <div id="eb-panel-inner">
             <div id="eb-panel-header">
-                <span id="eb-panel-title"><span id="eb-panel-title-text" data-i18n="panelTitle">EB Auto Score</span> <span id="eb-panel-version">5.0.0</span></span>
+                <span id="eb-panel-title"><span id="eb-panel-title-text" data-i18n="panelTitle">EB Auto Score</span> <span id="eb-panel-version" role="button" tabindex="0" data-i18n-title="aboutTitle">${EB_VERSION}</span></span>
                 <button id="eb-theme-toggle" class="eb-theme-btn" aria-label="Switch to light mode" data-i18n-aria="switchToLight">
                     <svg id="eb-theme-icon-dark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21q-3.75 0-6.37-2.63T3 12q0-3.75 2.63-6.38T12 3q.35 0 .69.03.34.02.67.07-1.03.73-1.64 1.9-.62 1.17-.62 2.5 0 2.23 1.56 3.79Q14.22 12.85 16.45 12.85q1.35 0 2.51-.61 1.16-.62 1.87-1.64.05.33.08.67.02.34.02.68 0 3.75-2.62 6.38T12 21"/></svg>
                     <svg id="eb-theme-icon-light" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17q-2.08 0-3.54-1.46Q7 14.08 7 12t1.46-3.54Q9.92 7 12 7t3.54 1.46Q17 9.92 17 12t-1.46 3.54Q14.08 17 12 17M2 13q-.42 0-.71-.29Q1 12.42 1 12t.29-.71Q1.58 11 2 11h2q.42 0 .71.29.29.29.29.71t-.29.71Q4.42 13 4 13zm18 0q-.42 0-.71-.29Q19 12.42 19 12t.29-.71q.29-.29.71-.29h2q.42 0 .71.29.29.29.29.71t-.29.71Q22.42 13 22 13zm-8-8q-.42 0-.71-.29Q11 4.42 11 4V2q0-.42.29-.71Q11.58 1 12 1t.71.29Q13 1.58 13 2v2q0 .42-.29.71Q12.42 5 12 5m0 18q-.42 0-.71-.29Q11 22.42 11 22v-2q0-.42.29-.71.29-.29.71-.29t.71.29q.29.29.29.71v2q0 .42-.29.71-.29.29-.71.29M5.65 7.05 4.575 6q-.3-.275-.288-.7.013-.425.288-.725.3-.3.725-.3t.7.3L7.05 5.65q.275.3.275.7 0 .4-.275.7-.275.3-.687.287-.413-.012-.713-.287M18 19.425l-1.05-1.075q-.275-.3-.275-.712 0-.413.275-.688.275-.3.688-.287.412.012.712.287L19.425 18q.3.275.288.7-.013.425-.288.725-.3.3-.725.3t-.7-.3M16.95 7.05q-.3-.275-.287-.688.012-.412.287-.712L18 4.575q.275-.3.7-.288.425.013.725.288.3.3.3.725t-.3.7L18.35 7.05q-.3.275-.7.275-.4 0-.7-.275M4.575 19.425q-.3-.3-.3-.725t.3-.7l1.075-1.05q.3-.275.712-.275.413 0 .688.275.3.275.287.688-.012.412-.287.712L6 19.425q-.275.3-.7.288-.425-.013-.725-.288"/></svg>
@@ -164,6 +164,26 @@ export function createPanel(onScoreAll, onStop, onThemeChange, onFilterChange, o
                 <md-filled-button id="eb-btn-all" data-i18n="scoreAllMatching">Score all matching</md-filled-button>
                 <md-outlined-button id="eb-btn-stop" class="eb-hidden" data-i18n="stop">Stop</md-outlined-button>
             </div>
+            <div id="eb-about" class="eb-hidden" role="dialog" aria-modal="true" aria-labelledby="eb-about-title">
+                <div id="eb-about-card">
+                    <div id="eb-about-head">
+                        <span id="eb-about-title" data-i18n="aboutTitle">About</span>
+                        <md-icon-button id="eb-about-close" aria-label="Close" data-i18n-aria="closeAbout">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.4 19 5 17.6 10.6 12 5 6.4 6.4 5 12 10.6 17.6 5 19 6.4 13.4 12 19 17.6 17.6 19 12 13.4z"/></svg>
+                        </md-icon-button>
+                    </div>
+                    <span id="eb-about-version">v${EB_VERSION}</span>
+                    <div class="eb-about-row">
+                        <span class="eb-about-label" data-i18n="aboutAuthor">Author</span>
+                        <span><a href="https://github.com/devcme" target="_blank" rel="noopener noreferrer">devc</a></span> &amp <a href="https://github.com/Si-Jiu" target="_blank" rel="noopener noreferrer">Si-Jiu</a>
+                    </div>
+                    <div class="eb-about-row">
+                        <span class="eb-about-label" data-i18n="aboutGithub">GitHub</span>
+                        <a href="https://github.com/devcme/auto_eb_score" target="_blank" rel="noopener noreferrer">devcme/auto_eb_score</a>
+                    </div>
+                    <p id="eb-about-message" data-i18n="aboutMessage"></p>
+                </div>
+            </div>
         </div>
     `;
 
@@ -174,7 +194,9 @@ export function createPanel(onScoreAll, onStop, onThemeChange, onFilterChange, o
 
     applyTranslations(panel);
 
-    try { document.getElementById('eb-panel-version').textContent = GM_info.script.version; } catch (e) { }
+    const ver = (typeof GM_info !== 'undefined' && GM_info.script && GM_info.script.version) || EB_VERSION;
+    document.getElementById('eb-panel-version').textContent = ver;
+    document.getElementById('eb-about-version').textContent = 'v' + ver;
 
     document.getElementById('eb-lang-select').addEventListener('change', e => {
         onLangChange(e.target.value);
@@ -184,7 +206,7 @@ export function createPanel(onScoreAll, onStop, onThemeChange, onFilterChange, o
     const header = document.getElementById('eb-panel-header');
     let sx, sy, sl, st;
     header.addEventListener('mousedown', e => {
-        if (e.target.closest('md-icon-button')) return;
+        if (e.target.closest('md-icon-button, #eb-panel-version')) return;
         e.preventDefault();
         sx = e.clientX; sy = e.clientY;
         const r = panel.getBoundingClientRect();
@@ -228,6 +250,18 @@ export function createPanel(onScoreAll, onStop, onThemeChange, onFilterChange, o
             onThemeChange(ev.matches ? 'light' : 'dark', false);
         });
     } catch (e) { }
+
+    // About dialog (opened by clicking the version badge)
+    const about = document.getElementById('eb-about');
+    const versionBtn = document.getElementById('eb-panel-version');
+    const setAbout = show => about.classList.toggle('eb-hidden', !show);
+    versionBtn.addEventListener('click', () => setAbout(true));
+    versionBtn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setAbout(true); }
+    });
+    document.getElementById('eb-about-close').addEventListener('click', () => setAbout(false));
+    about.addEventListener('click', e => { if (e.target === about) setAbout(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setAbout(false); });
 
     // Filter
     document.getElementById('eb-filter-incomplete').addEventListener('change', onFilterChange);
